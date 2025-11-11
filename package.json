@@ -2,5 +2,9 @@
   "name": "wcit",
   "version": "1.0.0",
   "description": "What Cat Is That - Cat Breed Identifier",
-  "private": true
+  "private": true,
+  "scripts": {
+    "postinstall": "npm install --production --prefix backend",
+    "start": "node backend/src/index.js"
+  }
 }
