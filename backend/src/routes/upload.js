@@ -42,4 +42,34 @@ router.post('/upload', upload.single('image'), async (req, res) => {
     }
 });
 
+router.get('/cats', async (req, res) => {
+    try {
+        const deviceId = req.headers['x-device-id'] || 'unknown';
+
+        const result = await pool.query(
+            `SELECT id, image_url, breed_name, confidence,
+            alternatice_breeds, fun_facts, created_at
+            FROM cat_identifications
+            WHERE device_id = $1
+            ORDER BY created_at DESC`,
+            [deviceId]
+        );
+
+        const cats = result.rows.map(row => ({
+            id: row.id.toString(),
+            imageUrl: row.image_url,
+            breedName: row.breed_name,
+            confidence: row.confidence,
+            alternativeBreeds: row.alternatice_breeds || [],
+            funFacts: row.fun_facts || [],
+            createdAt: row.created_at.toISOString(),
+        }));
+
+        res.json(cats);
+    } catch (error) {
+        console.error('Error fetching cats:', error);
+        res.status(500).json({error: 'Failed to fetch cats'});
+    }
+    });
+
 export default router;
