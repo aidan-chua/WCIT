@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import {identifyCatBreed} from "../services/githubModelsServices.js";
+import pool from "../db/connection.js";
 
 const router = express.Router();
 const upload = multer({
@@ -20,6 +21,8 @@ router.post('/upload', upload.single('image'), async (req, res) => {
         if (!req.file) {
             return res.status(400).json({error: 'No image file provided'})
         }
+
+        const deviceId = req.headers['x-device-id'] || 'unknown'; //Get device ID from header
         
         console.log('Processing image...');
         const identification = await identifyCatBreed(
@@ -27,14 +30,32 @@ router.post('/upload', upload.single('image'), async (req, res) => {
             req.file.mimetype
         );
 
+        const imageUrl = 'data:image/jpeg;base64,' + req.file.buffer.toString('base64');
+
+        // Save to database
+        const result = await pool.query(
+            `INSERT INTO cat_identifications
+            (device_id, image_url, breed_name, confidence, alternative_breeds, fun_facts)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING id, created_at`,
+            [
+                deviceId, 
+                imageUrl,
+                identification.breedName,
+                identification.confidence,
+                JSON.stringify(identification.alternativeBreeds || []),
+                identification.funFacts || []
+            ]
+        );
+
         res.json({
-            id: Date.now().toString(),
-            imageUrl: 'data:image/jpeg;base64,' + req.file.buffer.toString('base64'),
+            id: result.rows[0].id.toString(),
+            imageUrl: imageUrl,
             breedName: identification.breedName,
             confidence: identification.confidence,
             alternativeBreeds: identification.alternativeBreeds || [],
             funFacts: identification.funFacts || [],
-            createdAt: new Date().toISOString(),
+            createdAt: result.rows[0].created_at.toISOString(),
         });
     } catch (error) {
         console.error('Error identifying cat breed:', error);
@@ -48,7 +69,7 @@ router.get('/cats', async (req, res) => {
 
         const result = await pool.query(
             `SELECT id, image_url, breed_name, confidence,
-            alternatice_breeds, fun_facts, created_at
+            alternative_breeds, fun_facts, created_at
             FROM cat_identifications
             WHERE device_id = $1
             ORDER BY created_at DESC`,
@@ -60,7 +81,7 @@ router.get('/cats', async (req, res) => {
             imageUrl: row.image_url,
             breedName: row.breed_name,
             confidence: row.confidence,
-            alternativeBreeds: row.alternatice_breeds || [],
+            alternativeBreeds: row.alternative_breeds || [],
             funFacts: row.fun_facts || [],
             createdAt: row.created_at.toISOString(),
         }));

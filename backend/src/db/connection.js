@@ -1,7 +1,8 @@
 import pg from 'pg';
-import dotnev from 'dotenv';
+import dotenv from 'dotenv';
 
-dotnev.config();
+dotenv.config();
+console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? 'SET' : 'NOT SET');
 
 const {Pool} = pg;
 
