@@ -9,9 +9,11 @@ const HomePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<CatIdentification | null>(null);
   const [showResult, setShowResult] = useState(false);
+  // To create a button to upload an image
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // To create a button to open the camera
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
@@ -24,9 +26,17 @@ const HomePage: React.FC = () => {
 
   const handleCameraClick = () => {
     console.log('Button clicked');
-    console.log('fileInputRef.current:', fileInputRef.current);
-    fileInputRef.current?.click();
+    console.log('cameraInputRef.current:', cameraInputRef.current);
+    if (cameraInputRef.current){
+      cameraInputRef.current.click();
+    } else {
+      console.error('File input element not found');
+    }
   };
+
+  const handleFileUploadClick = () => {
+    fileInputRef.current?.click();
+  }
 
   const handleUpload = async () => {
     if (!selectedImage) return;
@@ -61,6 +71,11 @@ const HomePage: React.FC = () => {
           </p>
         </header>
 
+        <div className="upload-placeholder">
+          <div className="upload-icon">📷</div>
+          <p className="upload-text">Take a picture or upload an image</p>
+        </div>
+
         <div className="upload-section">
           <div className="upload-area">
             {previewUrl ? (
@@ -82,7 +97,7 @@ const HomePage: React.FC = () => {
             ) : (
               <div className="upload-placeholder">
                 <div className="upload-icon">📷</div>
-                <p className="upload-text">Take a picture or upload an image</p>
+                <p className="upload-text">Upload an image from device</p>
                 <input
                   type="file"
                   ref={fileInputRef}
