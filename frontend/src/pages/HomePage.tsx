@@ -23,6 +23,8 @@ const HomePage: React.FC = () => {
   };
 
   const handleCameraClick = () => {
+    console.log('Button clicked');
+    console.log('fileInputRef.current:', fileInputRef.current);
     fileInputRef.current?.click();
   };
 
