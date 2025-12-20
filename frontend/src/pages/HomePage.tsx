@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiService, CatIdentification } from '../services/api';
 import './HomePage.css';
@@ -9,11 +9,137 @@ const HomePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<CatIdentification | null>(null);
   const [showResult, setShowResult] = useState(false);
+
+// Camera-related state
+const [isCameraActive, setIsCameraActive] = useState(false);
+const [availableCameras, setAvailableCameras] = useState<MediaDeviceInfo[]>([]);
+const [currentCameraId, setCurrentCameraId] = useState<string | null>(null);
+const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
+
   // To create a button to upload an image
   const fileInputRef = useRef<HTMLInputElement>(null);
   // To create a button to open the camera
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const navigate = useNavigate();
+
+useEffect(()=> {
+  const getCameras = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter(device => device.kind === 'videoinput');
+      setAvailableCameras(videoDevices);
+    } catch (error) {
+      console.log('Error getting cameras:', error);
+    }
+  };
+  getCameras();
+}, []);
+
+useEffect(()=> {
+  return () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+  };
+}, []);
+
+const startCamera = async (deviceId?: string) => {
+    try {
+      // Stop existing stream
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+
+      const constraints: MediaStreamConstraints = {
+        video: deviceId 
+          ? { deviceId: { exact: deviceId } }
+          : { facingMode: facingMode }
+      };
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      streamRef.current = stream;
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+      
+      setIsCameraActive(true);
+      if (deviceId) {
+        setCurrentCameraId(deviceId);
+      }
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      alert('Could not access camera. Please check permissions.');
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setIsCameraActive(false);
+    setCurrentCameraId(null);
+  };
+
+  const switchCamera = async () => {
+    if (availableCameras.length < 2) {
+      alert('Only one camera available');
+      return;
+    }
+
+    // Find current camera index
+    const currentIndex = currentCameraId 
+      ? availableCameras.findIndex(cam => cam.deviceId === currentCameraId)
+      : -1;
+    
+    // Switch to next camera
+    const nextIndex = (currentIndex + 1) % availableCameras.length;
+    const nextCamera = availableCameras[nextIndex];
+    
+    await startCamera(nextCamera.deviceId);
+    
+    // Update facing mode based on camera label (if available)
+    const label = nextCamera.label.toLowerCase();
+    if (label.includes('front') || label.includes('user')) {
+      setFacingMode('user');
+    } else if (label.includes('back') || label.includes('rear') || label.includes('environment')) {
+      setFacingMode('environment');
+    }
+  };
+
+  const capturePhoto = () => {
+    if (!videoRef.current) return;
+
+    const video = videoRef.current;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.drawImage(video, 0, 0);
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const file = new File([blob], 'camera-photo.jpg', { type: 'image/jpeg' });
+          setSelectedImage(file);
+          setPreviewUrl(URL.createObjectURL(blob));
+          setResult(null);
+          setShowResult(false);
+          stopCamera();
+        }
+      }, 'image/jpeg', 0.95);
+    }
+  };
+
+
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
@@ -71,9 +197,6 @@ const HomePage: React.FC = () => {
           </p>
         </header>
 
-        <div className="upload-placeholder">
-          <div className="upload-text">Take a picture or upload an image</div>
-        </div>
 
         <div className="upload-section">
           <div className="upload-area">
@@ -95,14 +218,16 @@ const HomePage: React.FC = () => {
               </div>
             ) : (
               <div className="upload-placeholder">
-                <div className="upload-icon">📷</div>
-                <p className="upload-text">Upload an image from device</p>
+                <div className="upload-icon">🖼️</div>
+                <p className="upload-text">Upload Image</p>
 
                 <input
                   type="file"
                   ref={cameraInputRef}
                   accept="image/*"
-                  capture="environment"
+                  //capture="enivornment" makes the browser open the camera
+                  // no capture means it will select a photo from the file picker
+                  capture = "environment"
                   onChange={handleFileSelect}
                   style={{ display:'none' }}
                   id="camera-input"
@@ -112,20 +237,12 @@ const HomePage: React.FC = () => {
                   type="file"
                   ref={fileInputRef}
                   accept="image/*"
-                  capture="environment"
                   onChange={handleFileSelect}
                   style={{ display: 'none' }}
                   id="file-input"
                 />
 
               <div className="button-group" style={{ display:'flex', gap:'10px', justifyContent:'center'}}>
-                <button 
-                  className="upload-button"
-                  onClick={handleCameraClick}
-                  type="button"
-                >
-                  📷 Take Photo
-                </button>
 
               <button
               className="upload-button"
@@ -134,6 +251,15 @@ const HomePage: React.FC = () => {
               >
                 📁 Choose Image
               </button>
+
+                <button 
+                  className="upload-button"
+                  onClick={handleCameraClick}
+                  type="button"
+                >
+                  📷 Take Photo
+                </button>
+
               </div>
             </div>
             )}
