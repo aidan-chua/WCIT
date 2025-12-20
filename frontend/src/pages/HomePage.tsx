@@ -72,8 +72,7 @@ const HomePage: React.FC = () => {
         </header>
 
         <div className="upload-placeholder">
-          <div className="upload-icon">📷</div>
-          <p className="upload-text">Take a picture or upload an image</p>
+          <div className="upload-text">Take a picture or upload an image</div>
         </div>
 
         <div className="upload-section">
@@ -98,6 +97,17 @@ const HomePage: React.FC = () => {
               <div className="upload-placeholder">
                 <div className="upload-icon">📷</div>
                 <p className="upload-text">Upload an image from device</p>
+
+                <input
+                  type="file"
+                  ref={cameraInputRef}
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handleFileSelect}
+                  style={{ display:'none' }}
+                  id="camera-input"
+                  />
+
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -105,14 +115,27 @@ const HomePage: React.FC = () => {
                   capture="environment"
                   onChange={handleFileSelect}
                   style={{ display: 'none' }}
+                  id="file-input"
                 />
+
+              <div className="button-group" style={{ display:'flex', gap:'10px', justifyContent:'center'}}>
                 <button 
                   className="upload-button"
                   onClick={handleCameraClick}
+                  type="button"
                 >
-                  Choose Image
+                  📷 Take Photo
                 </button>
+
+              <button
+              className="upload-button"
+              onClick={handleFileUploadClick}
+              type="button"
+              >
+                📁 Choose Image
+              </button>
               </div>
+            </div>
             )}
           </div>
 
