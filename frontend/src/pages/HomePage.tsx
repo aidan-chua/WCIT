@@ -150,13 +150,13 @@ const startCamera = async (deviceId?: string) => {
     }
   };
 
-  const handleCameraClick = () => {
+  const handleCameraClick = async () => {
     console.log('Button clicked');
     console.log('cameraInputRef.current:', cameraInputRef.current);
-    if (cameraInputRef.current){
-      cameraInputRef.current.click();
+    if (isCameraActive){
+      stopCamera();
     } else {
-      console.error('File input element not found');
+      await startCamera();
     }
   };
 
@@ -213,7 +213,7 @@ const startCamera = async (deviceId?: string) => {
                     }
                   }}
                 >
-                  Change Image
+                  Change Photo
                 </button>
               </div>
             ) : (
@@ -249,7 +249,7 @@ const startCamera = async (deviceId?: string) => {
               onClick={handleFileUploadClick}
               type="button"
               >
-                📁 Choose Image
+                📁 Choose Photo
               </button>
 
                 <button 
