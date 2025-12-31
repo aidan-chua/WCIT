@@ -195,10 +195,10 @@ const startCamera = async (deviceId?: string) => {
             cat breeds using AI technology. Simply upload a photo or take a picture 
             to discover what breed your feline friend is!
           </p>
-        </header>
+        </header> 
 
-
-        <div className="upload-section">
+{/* 
+          <div className="upload-section">
           <div className="upload-area">
             {previewUrl ? (
               <div className="preview-container">
@@ -227,7 +227,7 @@ const startCamera = async (deviceId?: string) => {
                   accept="image/*"
                   //capture="enivornment" makes the browser open the camera
                   // no capture means it will select a photo from the file picker
-                  capture = "environment"
+                  capture="environment"
                   onChange={handleFileSelect}
                   style={{ display:'none' }}
                   id="camera-input"
@@ -263,6 +263,114 @@ const startCamera = async (deviceId?: string) => {
               </div>
             </div>
             )}
+          </div> 
+
+          {selectedImage && !result && (
+            <button
+              className="identify-button"
+              onClick={handleUpload}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Identifying...' : 'Identify Cat Breed'}
+            </button>
+          )}
+        </div> */}
+
+<div className="upload-section">
+          <div className="upload-area">
+            {isCameraActive ? (
+              <div className="camera-preview-container">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  className="camera-preview"
+                />
+                <div className="camera-controls">
+                  {availableCameras.length > 1 && (
+                    <button
+                      className="switch-camera-btn"
+                      onClick={switchCamera}
+                      type="button"
+                    >
+                      🔄 Switch Camera
+                    </button>
+                  )}
+                  <button
+                    className="capture-btn"
+                    onClick={capturePhoto}
+                    type="button"
+                  >
+                    📸 Capture
+                  </button>
+                  <button
+                    className="cancel-camera-btn"
+                    onClick={stopCamera}
+                    type="button"
+                  >
+                    ✕ Cancel
+                  </button>
+                </div>
+              </div>
+            ) : previewUrl ? (
+              <div className="preview-container">
+                <img src={previewUrl} alt="Preview" className="preview-image" />
+                <button 
+                  className="change-image-btn"
+                  onClick={() => {
+                    setSelectedImage(null);
+                    setPreviewUrl(null);
+                    if (fileInputRef.current) {
+                      fileInputRef.current.value = '';
+                    }
+                  }}
+                >
+                  Change Photo
+                </button>
+              </div>
+            ) : (
+              <div className="upload-placeholder">
+                <div className="upload-icon">🖼️</div>
+                <p className="upload-text">Upload Image</p>
+
+                <input
+                  type="file"
+                  ref={cameraInputRef}
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handleFileSelect}
+                  style={{ display:'none' }}
+                  id="camera-input"
+                />
+
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handleFileSelect}
+                  style={{ display: 'none' }}
+                  id="file-input"
+                />
+
+                <div className="button-group" style={{ display:'flex', gap:'10px', justifyContent:'center'}}>
+                  <button
+                    className="upload-button"
+                    onClick={handleFileUploadClick}
+                    type="button"
+                  >
+                    📁 Choose Photo
+                  </button>
+
+                  <button 
+                    className="upload-button"
+                    onClick={handleCameraClick}
+                    type="button"
+                  >
+                    📷 Take Photo
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {selectedImage && !result && (
@@ -275,7 +383,6 @@ const startCamera = async (deviceId?: string) => {
             </button>
           )}
         </div>
-
         {isLoading && (
           <div className="loading-container">
             <div className="loading-spinner"></div>

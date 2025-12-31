@@ -405,3 +405,74 @@
   }
 }
 
+/* Camera Preview Styles */
+.camera-preview-container {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.camera-preview {
+  width: 100%;
+  max-height: 500px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #000;
+  display: block;
+}
+
+.camera-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.switch-camera-btn,
+.capture-btn,
+.cancel-camera-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+  font-weight: 600;
+}
+
+.switch-camera-btn:hover,
+.capture-btn:hover,
+.cancel-camera-btn:hover {
+  opacity: 0.8;
+  transform: translateY(-2px);
+}
+
+.capture-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.switch-camera-btn {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.cancel-camera-btn {
+  background: #ff6b6b;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .camera-preview {
+    max-height: 400px;
+  }
+  
+  .switch-camera-btn,
+  .capture-btn,
+  .cancel-camera-btn {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+}
