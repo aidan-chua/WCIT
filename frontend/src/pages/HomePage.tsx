@@ -63,7 +63,9 @@ const startCamera = async (deviceId?: string) => {
           : { facingMode: facingMode }
       };
 
+      console.log('Requestung camera access with constraints:', constraints);
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      console.log('Camera access granted with stream:', stream);
       streamRef.current = stream;
 
       // Get the actual device ID from the active track
@@ -78,6 +80,9 @@ const startCamera = async (deviceId?: string) => {
       const videoDevices = devices.filter(device => device.kind === 'videoinput');
       setAvailableCameras(videoDevices);
       console.log('Cameras found:', videoDevices.length, videoDevices);
+
+      // Set camera active first so the video element renders
+      setIsCameraActive(true);
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
