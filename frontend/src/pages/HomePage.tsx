@@ -50,6 +50,21 @@ useEffect(()=> {
   };
 }, []);
 
+// Add this useEffect after your existing useEffects
+useEffect(() => {
+  if (isCameraActive && streamRef.current && videoRef.current) {
+    console.log('Setting video srcObject from useEffect');
+    videoRef.current.srcObject = streamRef.current;
+    videoRef.current.play()
+      .then(() => {
+        console.log('Video started from useEffect');
+      })
+      .catch((error) => {
+        console.error('Error playing video in useEffect:', error);
+      });
+  }
+}, [isCameraActive]);
+
 const startCamera = async (deviceId?: string) => {
     try {
       // Stop existing stream
@@ -63,7 +78,7 @@ const startCamera = async (deviceId?: string) => {
           : { facingMode: facingMode }
       };
 
-      console.log('Requestung camera access with constraints:', constraints);
+      console.log('Requesting camera access with constraints:', constraints);
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       console.log('Camera access granted with stream:', stream);
       streamRef.current = stream;
@@ -84,20 +99,36 @@ const startCamera = async (deviceId?: string) => {
       // Set camera active first so the video element renders
       setIsCameraActive(true);
       
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
+      // Use setTimeOut to ensure the video element is rendered before assigning stream
+      setTimeout(() => {
+        if (videoRef.current && streamRef.current) {
+          console.log('Assigning stream to video element');
+          videoRef.current.srcObject = streamRef.current;
+          videoRef.current.play()
+            .then(() => {
+              console.log('Video playback started successfully');
+            })
+            .catch((playError) => {
+              console.error('Error playing video:', playError);
+            });
+        } else {
+          console.error('Video ref or stream is null:', { 
+            videoRef: videoRef.current, 
+            stream: streamRef.current 
+          });
+        }
+      }, 100);
       
-      setIsCameraActive(true);
       if (deviceId) {
         setCurrentCameraId(deviceId);
       }
     } catch (error) {
       console.error('Error accessing camera:', error);
       alert('Could not access camera. Please check permissions.');
+      setIsCameraActive(false);
     }
   };
+
 
   const stopCamera = () => {
     if (streamRef.current) {
