@@ -34,8 +34,12 @@ useEffect(()=> {
       console.log('Error getting cameras:', error);
     }
   };
-  getCameras();
-}, []);
+
+  // Only enumerate if we have permission (after first camera access)
+  if (isCameraActive) {
+    getCameras();
+  }
+}, [isCameraActive]);
 
 useEffect(()=> {
   return () => {
@@ -61,6 +65,19 @@ const startCamera = async (deviceId?: string) => {
 
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       streamRef.current = stream;
+
+      // Get the actual device ID from the active track
+      const videoTrack = stream.getVideoTracks()[0];
+      const settings = videoTrack.getSettings();
+      if (settings.deviceId) {
+        setCurrentCameraId(settings.deviceId);
+      }
+
+      // Enumerate devices after permission is granted to get full list with labels
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter(device => device.kind === 'videoinput');
+      setAvailableCameras(videoDevices);
+      console.log('Cameras found:', videoDevices.length, videoDevices);
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
