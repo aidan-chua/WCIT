@@ -7,6 +7,7 @@ dns.setDefaultResultOrder('ipv4first');
 
 dotenv.config();
 console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? 'SET' : 'NOT SET');
+console.log('DB_HOST:', process.env.DB_HOST);
 
 const {Pool} = pg;
 
