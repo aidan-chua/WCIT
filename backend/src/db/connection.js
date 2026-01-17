@@ -1,5 +1,9 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
+import dns from 'dns';
+
+// Force IPv4 DNS resolutions (perfer IPv4 over Ipv6)
+dns.setDefaultResultOrder('ipv4first');
 
 dotenv.config();
 console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? 'SET' : 'NOT SET');
