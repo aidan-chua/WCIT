@@ -17,8 +17,8 @@
   bottom: 0;
   pointer-events: none; 
   z-index: 0; 
-  opacity: 0.12; 
-  mix-blend-mode: multiply; 
+  opacity: 0.25; 
+  mix-blend-mode: normal; 
   
   /* Option 1: Using SVG data URIs (no external files needed) */
   background-image: 
@@ -30,7 +30,7 @@
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 30 Q30 20 20 40 Q10 60 30 70 Q50 80 50 90 Q50 80 70 70 Q90 60 80 40 Q70 20 50 30 Z' fill='%233c3a5d'/%3E%3C/svg%3E");
   
   background-size: 
-    60px 60px,  
+    80px 80px,  
     40px 40px,  
     50px 50px;  
   
@@ -49,6 +49,8 @@
   padding: 30px 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   margin-top: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .app-container {
