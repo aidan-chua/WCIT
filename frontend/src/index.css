@@ -1,13 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Patrick+Hand&display=swap');
+
+:root {
+  --heading-font: 'Patirck Hand', 'Fredoka', system-ui, sans-serif;
+  --body-font: 'Fredoka', system-ui, sans-serif;
+  --ink: #3c3a5d;
+  --ink-soft: #5a5790;
+  --bg: #f7f4f0;
+  --card: #ffffff;
+  --accent: #7c6cf4;
+  --accent-2: #f39ac4;
+}
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg);
+  background-image: radial-gradient(rgba(0,0,0,0.025) 1px, transparent 0);
+  background-size: 6px 6px;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+p, label, span {
+  color: #4a4768;
+}
+a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
