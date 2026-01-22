@@ -240,7 +240,7 @@ const startCamera = async (deviceId?: string) => {
   return (
     <div className="home-page">
       <div className="home-container">
-      <div className="page-bg-doodle"></div>
+        <div className="page-bg-doodle"></div>
         <header className="home-header">
           <h1 className="home-title">WCIT</h1>
           <p className="home-description">
