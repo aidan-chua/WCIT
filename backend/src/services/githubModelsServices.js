@@ -17,19 +17,21 @@ export async function identifyCatBreed(imageBuffer, imageMimeType) {
         const base64Image = imageBuffer.toString('base64');
         const dataUrl = `data:${imageMimeType};base64,${base64Image}`;
 
-        const response = await client.chat.completions.create({
+        // First, check if its actually a cat
+        const catCheckResponse = await client.chat.completions.create({
             model: modelName,
             messages: [
                 {
                     role: "developer",
-                    content: "You are a cat breed identification expert. Analyze cat images and identify breeds with confidence scores. Give 3 other cats as possible likelhoods. Lastly give 3 fun facts about the cat with the highest likelihood score"
+                    content: "You are an expert at identifying animals in images. Determine if the image contains a cat (domestic or wild like lions, tigers, etc.)."
                 },
-                { 
+                {
                     role: "user",
                     content: [
                         {
-                            type: "text",
-                            text: `Analyze this cat image and identify the breed. Respond in JSON format with this exact structure:
+                            type:"text",
+                            text:`Analyze this cat image and identify the breed.Respond in JSON format with this exact structure:
+
 {
   "breedName": "Primary breed name",
   "confidence": 85,
@@ -40,8 +42,15 @@ export async function identifyCatBreed(imageBuffer, imageMimeType) {
     "Fact 1 about this breed",
     "Fact 2 about this breed",
     "Fact 3 about this breed"
-  ]
-}`
+  ],
+  "rarity": "common" or "uncommon" or "rare" or "ultra rare",
+  "difficulty": "easy" or "medium" or "hard" or "extreme",
+  "placeOfOrigin: "Country or refion where this breed originated"
+}
+  Important:
+- rarity: "common" for very common breeds, "uncommon" for less common, "rare" for rare breeds, "ultra rare" for extremely rare or exotic breeds
+- difficulty: "easy" for typical house cats, "medium" for breeds requiring some special care, "hard" for breeds with significant care requirements, "extreme" for undomesticated cats like lions, tigers, cheetahs, etc.
+- placeOfOrigin: The country or region where this breed originated (e.g., "Thailand", "Egypt", "United States", "Africa" for wild cats)`
                         },
                         {
                             type: "image_url",
@@ -54,12 +63,16 @@ export async function identifyCatBreed(imageBuffer, imageMimeType) {
         });
         
         const content = response.choices[0]?.message?.content;
-        if (!content) throw new Error("No response from model");
-
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) throw new Error("Invalid JSON response from model");
-
-        return JSON.parse(jsonMatch[0]);
+        // Validate and set defaults
+        return {
+            breedName: result.breedName || "Unknown",
+            confidence: result.confidence || 0,
+            alternativeBreeds: result.alternativeBreeds || [],
+            funFacts: result.funFacts || [],
+            rarity: result.rarity || "common",
+            difficulty: result.difficulty || "easy",
+            placeOfOrigin: result.placeOfOrigin || "Unknown"
+        };
     } catch (error) {
         console.error("GitHub Models Error:", error);
         throw error;

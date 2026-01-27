@@ -43,6 +43,7 @@ const GalleryPage: React.FC = () => {
   return (
     <div className="gallery-page">
       <div className="gallery-container">
+        <div className="page-bg-doodle"></div>
         <header className="gallery-header">
           <h1 className="gallery-title">My Cat Collection</h1>
           <p className="gallery-subtitle">
@@ -118,6 +119,21 @@ const GalleryPage: React.FC = () => {
                           </ul>
                         </div>
                       )}
+
+                      <div className="detail-section">
+                        <h4>Rarity</h4>
+                        <p className="rarity-value">{cat.rarity || "Common"}</p>
+                      </div>
+
+                      <div className="detail-section">
+                        <h4>Difficulty</h4>
+                        <p className="difficulty-value">{cat.difficulty || "Easy"}</p>
+                      </div>
+
+                      <div className="detail-section">
+                        <h4>Place of Origin</h4>
+                        <p className="origin-value">{cat.placeOfOrigin || "Unknown"}</p>
+                      </div>
 
                       <div className="detail-section">
                         <h4>Identified On</h4>

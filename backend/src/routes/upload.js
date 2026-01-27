@@ -25,17 +25,29 @@ router.post('/upload', upload.single('image'), async (req, res) => {
         const deviceId = req.headers['x-device-id'] || 'unknown'; //Get device ID from header
         
         console.log('Processing image...');
-        const identification = await identifyCatBreed(
+        let identification;
+        try {
+            identification = await identifyCatBreed(
             req.file.buffer,
             req.file.mimetype
         );
+    } catch (error) {
+        //check if its the "not a cat" error
+        if (error.isNotCat || error.message.includes("MEOWRRER404")) {
+            return res.status(400).json({
+                error:"MEOWRRER 404: Not a cat",
+                reason: error.reason || "The image does not contain a cat"
+            });
+        }
+        throw error;
+    }
 
         const imageUrl = 'data:image/jpeg;base64,' + req.file.buffer.toString('base64');
 
         // Save to database
         const result = await pool.query(
             `INSERT INTO cat_identifications
-            (device_id, image_url, breed_name, confidence, alternative_breeds, fun_facts)
+            (device_id, image_url, breed_name, confidence, alternative_breeds, fun_facts, rarity, difficulty, place_of_origin)
             VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING id, created_at`,
             [
@@ -44,7 +56,10 @@ router.post('/upload', upload.single('image'), async (req, res) => {
                 identification.breedName,
                 identification.confidence,
                 JSON.stringify(identification.alternativeBreeds || []),
-                identification.funFacts || []
+                identification.funFacts || [],
+                identification.rarity || "common",
+                identification.difficulty || "easy",
+                identification.placeOfOrigin || "Unknown"
             ]
         );
 
@@ -55,6 +70,9 @@ router.post('/upload', upload.single('image'), async (req, res) => {
             confidence: identification.confidence,
             alternativeBreeds: identification.alternativeBreeds || [],
             funFacts: identification.funFacts || [],
+            rarity: identification.rarity,
+            difficulty: identification.difficulty,
+            placeOfOrigin: identification.placeOfOrigin,
             createdAt: result.rows[0].created_at.toISOString(),
         });
     } catch (error) {
@@ -69,7 +87,7 @@ router.get('/cats', async (req, res) => {
 
         const result = await pool.query(
             `SELECT id, image_url, breed_name, confidence,
-            alternative_breeds, fun_facts, created_at
+            alternative_breeds, fun_facts, rarity, difficulty, place_of_origin, created_at
             FROM cat_identifications
             WHERE device_id = $1
             ORDER BY created_at DESC`,
@@ -83,6 +101,9 @@ router.get('/cats', async (req, res) => {
             confidence: row.confidence,
             alternativeBreeds: row.alternative_breeds || [],
             funFacts: row.fun_facts || [],
+            rarity: row.rarity || 'common',
+            difficulty: row.difficulty || 'easy',
+            placeOfOrigin: row.place_of_origin || 'Unknown',
             createdAt: row.created_at.toISOString(),
         }));
 

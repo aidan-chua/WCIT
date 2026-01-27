@@ -15,6 +15,9 @@ export interface CatIdentification {
   confidence: number;
   alternativeBreeds: AlternativeBreed[];
   funFacts: string[];
+  rarity: string;
+  difficulty: string;
+  placeOfOrigin: string;
   createdAt: string;
 }
 
@@ -59,6 +62,9 @@ const mockCatIdentifications: CatIdentification[] = [
       'They were originally brought to America on ships to control rodent populations.',
       'They have a calm and friendly temperament, making them great family pets.',
     ],
+    rarity: "common",
+    difficulty: "easy",
+    placeOfOrigin: "Planetmeow",
     createdAt: new Date().toISOString(),
   },
 ];
@@ -76,7 +82,9 @@ export const apiService = {
         },
       });
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response?.data?.error === "MEOWRRER404 Thats not a cat") {
+        throw new Error("MEOWRRER404 Thats not a cat");}
       // Mock response for development
       console.log('Using mock data - backend not connected');
       return new Promise((resolve) => {
@@ -95,6 +103,9 @@ export const apiService = {
               'They were originally brought to America on ships to control rodent populations.',
               'They have a calm and friendly temperament, making them great family pets.',
             ],
+            rarity: "common",
+            difficulty: "easy",
+            placeOfOrigin: "Planetmeow",
             createdAt: new Date().toISOString(),
           });
         }, 1500);

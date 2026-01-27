@@ -7,6 +7,9 @@ CREATE TABLE IF NOT EXISTS cat_identifications (
     confidence INTEGER NOT NULL,
     alternative_breeds JSONB,
     fun_facts TEXT[],
+    rarity VARCHAR(50),
+    difficulty VARCHAR(50),
+    place_of_origin TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

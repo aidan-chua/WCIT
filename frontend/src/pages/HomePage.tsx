@@ -221,14 +221,20 @@ const startCamera = async (deviceId?: string) => {
     if (!selectedImage) return;
 
     setIsLoading(true);
+    alert(null);
+
     try {
       const identification = await apiService.uploadImage(selectedImage);
       setResult(identification);
       setShowResult(true);
-    } catch (error) {
+    } catch (error:any) {
+      if (error.message === "MEOWRRER404 Thats not a cat") {
+        alert("MEOWRRER404 Thats not a cat");
+      } else {
       console.error('Error uploading image:', error);
       alert('Failed to identify cat breed. Please try again.');
-    } finally {
+    } 
+  }finally {
       setIsLoading(false);
     }
   };
@@ -241,13 +247,15 @@ const startCamera = async (deviceId?: string) => {
     <div className="home-page">
       <div className="home-container">
         <div className="page-bg-doodle"></div>
+        <div className="walking-character"></div>
         <header className="home-header">
-          <h1 className="home-title">WCIT</h1>
+          <h1 className="home-title">W.C.I.T</h1>
+          <h4 className="home-subtitle">What Cat Is That?</h4>
           <p className="home-description">
-            What Cat Is That? As a fellow cat enthusiast, every time I see a cat, 
+            As a fellow cat enthusiast, every time I see a cat, 
             I wonder "hmm, what type of cat is that?" This app helps you identify 
-            cat breeds using AI technology. Simply upload a photo or take a picture 
-            to discover what breed your feline friend is!
+            cat breeds using AI technology! Simply upload a photo or take a picture 
+            of your feline friend to discover what breed it is as well as a few fun facts!
           </p>
         </header> 
 
@@ -458,6 +466,22 @@ const startCamera = async (deviceId?: string) => {
                 <div className="confidence-section">
                   <p className="confidence-label">Confidence: {result.confidence}%</p>
                 </div>
+
+                        {/* Add these new sections */}
+              <div className="details-section">
+                <div className="detail-item">
+                  <span className="detail-label">Rarity:</span>
+                  <span className="detail-value">{result.rarity || 'common'}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">Difficulty:</span>
+                  <span className="detail-value">{result.difficulty || 'easy'}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">Place of Origin:</span>
+                  <span className="detail-value">{result.placeOfOrigin || 'Unknown'}</span>
+                </div>
+              </div>
 
                 {result.alternativeBreeds.length > 0 && (
                   <div className="alternatives-section">
