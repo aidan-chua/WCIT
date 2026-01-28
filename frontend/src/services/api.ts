@@ -87,7 +87,7 @@ export const apiService = {
         error.response?.data?.error?.includes("MEOWRRER404") ||
         error.response?.data?.error?.includes("Not a cat")
       ) {
-        const customError: any = new Error("MEOWRRER404: Thats not a cat");
+        const customError: any = new Error("MEOWRRER404 Thats not a cat");
         customError.reason = error.response?.data?.reason || "The image does not contain a cat";
         throw customError;}
       // Mock response for development

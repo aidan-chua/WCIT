@@ -227,9 +227,10 @@ const startCamera = async (deviceId?: string) => {
       setResult(identification);
       setShowResult(true);
     } catch (error:any) {
+      console.log(`Error caught in handleUpload:`, error);
       if (error.message === "MEOWRRER404 Thats not a cat" || error.message?.includes("MEOWRRER404")) {
         const reason = error.reason || "The image does not contain a cat";
-        alert(`MEOWRRER404 Thats not a cat"\n\n${reason}`);
+        alert(`MEOWRRER404: That's not a cat"\n\n${reason}`);
       } else {
       console.error('Error uploading image:', error);
       alert('Failed to identify cat breed. Please try again.');
