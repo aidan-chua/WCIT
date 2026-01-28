@@ -136,6 +136,13 @@ Important:
         
         const result = JSON.parse(jsonMatch[0]);
 
+        // Normalize percentages so they add up to 100%
+        const mainConfidence = Math.max(0, Math.min(100, result.confidence || 0));
+        const alternativeBreeds = (result.alternativeBreeds || []).map(alt => ({
+            breed: alt.breed,
+            percentage: Math.max(0, Math.min(100, alt.percentage || 0))
+        }));
+
         //Calculate total percentage
         const totalPercentage = mainConfidence + alternativeBreeds.reduce((sum, alt) => sum + alt.percentage, 0);
 
