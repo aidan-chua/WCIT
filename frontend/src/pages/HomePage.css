@@ -462,6 +462,96 @@ h1, h2, h3 {
   color: white;
 }
 
+.error-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s;
+}
+
+.error-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+  animation: slideUp 0.3s;
+  border: 3px solid #ff6b6b;
+  box-shadow: 0 10px 40px rgba(255, 107, 107, 0.3);
+}
+
+.error-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.error-header h2 {
+  font-family: var(--heading-font);
+  font-size: 2.5rem;
+  color: #ff6b6b;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+}
+
+.error-title {
+  font-family: var(--heading-font);
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+  font-weight: 600;
+}
+
+.error-content {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.error-message {
+  font-family: var(--body-font);
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.error-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.error-button {
+  font-family: var(--body-font);
+  font-weight: 600;
+  background: linear-gradient(120deg, #ff6b6b, #ff8787);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.error-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.error-button:active {
+  transform: translateY(0);
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .home-page {
