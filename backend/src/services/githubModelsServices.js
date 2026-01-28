@@ -137,7 +137,7 @@ Important:
         const result = JSON.parse(jsonMatch[0]);
 
         //Calculate total percentage
-        const totalPercentage = mainconfidence + alternativeBreeds.reduce((sum, alt) => sum + alt.percentage, 0);
+        const totalPercentage = mainConfidence + alternativeBreeds.reduce((sum, alt) => sum + alt.percentage, 0);
 
         // Normalize percentage to 100%
         let normalizedMainConfidence = mainConfidence;
