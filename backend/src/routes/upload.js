@@ -35,7 +35,7 @@ router.post('/upload', upload.single('image'), async (req, res) => {
             //check if its the "not a cat" error
             if (error.isNotCat || error.message.includes("MEOWRRER404")) {
                 return res.status(400).json({
-                    error:"MEOWRRER 404: Not a cat",
+                    error:"MEOWRRER 404: Thats not a cat",
                     reason: error.reason || "The image does not contain a cat"
                 });
             }
