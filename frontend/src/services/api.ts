@@ -83,13 +83,25 @@ export const apiService = {
       });
       return response.data;
     } catch (error: any) {
+      // Debug: log the error to see what we're getting
+      console.log('Upload error caught:', {
+        status: error.response?.status,
+        error: error.response?.data?.error,
+        reason: error.response?.data?.reason,
+        fullResponse: error.response?.data
+      });
+
       if (error.response?.data?.error === "MEOWRRER404 Thats not a cat" ||
+        error.response?.data?.error === "MEOWRRER 404 Thats not a cat" ||
+        error.response?.data?.error === "MEOWRRER404 Thats not a cat" ||
         error.response?.data?.error?.includes("MEOWRRER404") ||
         error.response?.data?.error?.includes("Not a cat")
       ) {
         const customError: any = new Error("MEOWRRER404 Thats not a cat");
         customError.reason = error.response?.data?.reason || "The image does not contain a cat";
-        throw customError;}
+        console.log('Throwing MEOWRRER404 error:', customError);
+        throw customError;
+      }
       // Mock response for development
       console.log('Using mock data - backend not connected');
       return new Promise((resolve) => {
