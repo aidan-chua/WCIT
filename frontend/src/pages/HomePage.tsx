@@ -221,7 +221,6 @@ const startCamera = async (deviceId?: string) => {
     if (!selectedImage) return;
 
     setIsLoading(true);
-    alert(null);
 
     try {
       const identification = await apiService.uploadImage(selectedImage);
