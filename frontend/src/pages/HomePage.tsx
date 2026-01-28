@@ -466,22 +466,6 @@ const startCamera = async (deviceId?: string) => {
                   <p className="confidence-label">Confidence: {result.confidence}%</p>
                 </div>
 
-                        {/* Add these new sections */}
-              <div className="details-section">
-                <div className="detail-item">
-                  <span className="detail-label">Rarity:</span>
-                  <span className="detail-value">{result.rarity || 'common'}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Difficulty:</span>
-                  <span className="detail-value">{result.difficulty || 'easy'}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Place of Origin:</span>
-                  <span className="detail-value">{result.placeOfOrigin || 'Unknown'}</span>
-                </div>
-              </div>
-
                 {result.alternativeBreeds.length > 0 && (
                   <div className="alternatives-section">
                     <h3>Other Possible Breeds:</h3>
@@ -496,6 +480,20 @@ const startCamera = async (deviceId?: string) => {
                   </div>
                 )}
 
+                {/* {cat.alternativeBreeds.length > 0 && (
+                        <div className="detail-section">
+                          <h4>Other Possible Breeds</h4>
+                          <ul className="alternatives-list">
+                            {cat.alternativeBreeds.map((alt, index) => (
+                              <li key={index} className="alternative-item">
+                                <span className="breed-name">{alt.breed}</span>
+                                <span className="percentage">{alt.percentage}%</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )} */}
+
                 {result.funFacts.length > 0 && (
                   <div className="fun-facts-section">
                     <h3>Fun Facts:</h3>
@@ -507,6 +505,21 @@ const startCamera = async (deviceId?: string) => {
                   </div>
                 )}
               </div>
+
+              <div className="detail-section">
+                        <h4>Rarity</h4>
+                        <p className="rarity-value">{result.rarity || "Common"}</p>
+                      </div>
+
+                      <div className="detail-section">
+                        <h4>Difficulty</h4>
+                        <p className="difficulty-value">{result.difficulty || "Easy"}</p>
+                      </div>
+
+                      <div className="detail-section">
+                        <h4>Place of Origin</h4>
+                        <p className="origin-value">{result.placeOfOrigin || "Unknown"}</p>
+                      </div>
 
               <div className="result-actions">
                 <button 

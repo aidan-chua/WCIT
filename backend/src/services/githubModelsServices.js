@@ -88,9 +88,9 @@ export async function identifyCatBreed(imageBuffer, imageMimeType) {
 
 {
   "breedName": "Primary breed name",
-  "confidence": 85,
+  "confidence":  <number between 0-100 representing your confidence in this identification>,
   "alternativeBreeds": [
-    {"breed": "Breed name", "percentage": 10}
+    {"breed": "Breed name", "percentage": <numver between 0-100}
   ],
   "funFacts": [
     "Fact 1 about this breed",
@@ -103,6 +103,8 @@ export async function identifyCatBreed(imageBuffer, imageMimeType) {
 }
 
 Important:
+- confidence: Provide a realistic confidence percentage (0-100) based on how certain you are of the identification. Do NOT use a fixed value like 85.
+- alternativeBreeds: List other possible breeds with their confidence percentages. The sum of the main confidence and all alternative percentages should ideally be close to 100%.
 - rarity: "common" for very common breeds, "uncommon" for less common, "rare" for rare breeds, "ultra rare" for extremely rare or exotic breeds
 - difficulty: "easy" for typical house cats, "medium" for breeds requiring some special care, "hard" for breeds with significant care requirements, "extreme" for undomesticated cats like lions, tigers, cheetahs, etc.
 - placeOfOrigin: The country or region where this breed originated (e.g., "Thailand", "Egypt", "United States", "Africa" for wild cats)`
@@ -133,7 +135,32 @@ Important:
         }
         
         const result = JSON.parse(jsonMatch[0]);
-        
+
+        //Calculate total percentage
+        const totalPercentage = mainconfidence + alternativeBreeds.reduce((sum, alt) => sum + alt.percentage, 0);
+
+        // Normalize percentage to 100%
+        let normalizedMainConfidence = mainConfidence;
+        let normalizedAlternatives = alternativeBreeds;
+
+        if (totalPercentage > 0 && Math.abs(totalPercentage - 100) > 1) {
+            // Normalize to 100%
+            const scaleFactor = 100 / totalPercentage;
+            normalizedMainConfidence = Math.round(mainConfidence * scaleFactor);
+            normalizedAlternatives = alternativeBreeds.map(alt => ({
+                breed: alt.breed,
+                percentage: Math.round(alt.percentage * scaleFactor)
+            }));
+
+        //Adjust for rounding error to ensure it adds up to 100%
+        const newTotal = normalizedMainConfidence + normalizedAlternatives.reduce((sum, alt) => sum + alt.percentage, 0);
+        const difference = 100 - newTotal;
+        if (difference !== 0) {
+            normalizedMainConfidence += difference;
+        }
+
+    }
+    
         // Validate and set defaults
         return {
             breedName: result.breedName || "Unknown",
