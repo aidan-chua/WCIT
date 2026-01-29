@@ -263,7 +263,7 @@ const startCamera = async (deviceId?: string) => {
     try {
       const res = await fetch(sample.src);
       if (!res.ok) throw new Error(`Image not foung`);
-      const blob = await.res.blob();
+      const blob = await res.blob();
       const file = new File([blob], sample.filename, {type:blob.type || 'image/jpeg'});
       setSelectedImage(file);
       setPreviewUrl(URL.createObjectURL(file));
@@ -478,6 +478,21 @@ const startCamera = async (deviceId?: string) => {
             </button>
           )}
         </div>
+
+        <div className="sample-photos-section">
+          <h3 className="sample-photos-title">Try sample photos</h3>
+          <p className="sample-photos-subtitle">Dont have a cat yourself? Either screenshot a cat online or use one of our sample "cats", DONT CLICK THE DOG</p>
+          <div className = "sample-photos-grid">
+          {SAMPLE_PHOTOS.map((sample) => (
+            <button key = {sample.id} type = "button" className = "sample-photos-card" onClick={()=>handleSamplePhotoClick(sample)}>
+              <img src={sample.src} alt={sample.label} className="sample-photo-image" />
+              <span className="sample-photo-label">{sample.label}</span>
+            </button>
+          ))}
+          </div>
+        </div>
+
+          
         {isLoading && (
           <div className="loading-container">
             <div className="loading-spinner"></div>
