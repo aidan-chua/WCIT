@@ -248,7 +248,7 @@ const startCamera = async (deviceId?: string) => {
   };
 
   const handleCloseError = () => {
-    setShowResult(false);
+    setShowError(false);
     setErrorReason("");
   };
 
