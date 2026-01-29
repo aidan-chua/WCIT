@@ -16,13 +16,17 @@ const [availableCameras, setAvailableCameras] = useState<MediaDeviceInfo[]>([]);
 const [currentCameraId, setCurrentCameraId] = useState<string | null>(null);
 const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
 
-  // To create a button to upload an image
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  // To create a button to open the camera
-  const cameraInputRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const navigate = useNavigate();
+// To create a button to upload an image
+const fileInputRef = useRef<HTMLInputElement>(null);
+// To create a button to open the camera
+const cameraInputRef = useRef<HTMLInputElement>(null);
+const videoRef = useRef<HTMLVideoElement>(null);
+const streamRef = useRef<MediaStream | null>(null);
+const navigate = useNavigate();
+  
+// Used for error message pop up
+const [showError, setShowError] = useState(false);
+const [errorReason, setErrorReason] = useState("");
 
 useEffect(()=> {
   const getCameras = async () => {
@@ -221,27 +225,31 @@ const startCamera = async (deviceId?: string) => {
     if (!selectedImage) return;
 
     setIsLoading(true);
+    setShowError(false);
 
     try {
       const identification = await apiService.uploadImage(selectedImage);
       setResult(identification);
-      setShowResult(true);
+      setShowResult(false);
     } catch (error:any) {
       console.log(`Error caught in handleUpload:`, error);
       if (error.message === "MEOWRRER404 Thats not a cat" || error.message?.includes("MEOWRRER404")) {
         const reason = error.reason || "The image does not contain a cat";
-        alert(`MEOWRRER404: That's not a cat"\n\n${reason}`);
+        setErrorReason(reason);
+        setShowError(true);
       } else {
       console.error('Error uploading image:', error);
-      alert('Failed to identify cat breed. Please try again.');
+      setErrorReason('Failed to identify cat breed. Please try again.');
+      setShowError(true);
     } 
   }finally {
       setIsLoading(false);
     }
   };
 
-  const handleCloseResult = () => {
+  const handleCloseError = () => {
     setShowResult(false);
+    setErrorReason("");
   };
 
   return (
@@ -454,9 +462,9 @@ const startCamera = async (deviceId?: string) => {
         )}
 
         {showResult && result && (
-          <div className="result-modal-overlay" onClick={handleCloseResult}>
+          <div className="result-modal-overlay" onClick={handleCloseError}>
             <div className="result-modal" onClick={(e) => e.stopPropagation()}>
-              <button className="close-button" onClick={handleCloseResult}>×</button>
+              <button className="close-button" onClick={handleCloseError}>×</button>
               
               <div className="result-header">
                 <h2>Congratulations!</h2>
@@ -560,10 +568,38 @@ const startCamera = async (deviceId?: string) => {
             View My Collection
           </button>
         </nav>
+
+        {showError && (
+          <div className="error-modal-overlay" onClick={handleCloseError}>
+            <div className="error-modal" onClick={(e) => e.stopPropagation()}>
+              <button className="close-button" onClick={handleCloseError}>×</button>
+              
+              <div className="error-header">
+                <h2>🐾 MEOWRRER404</h2>
+                <p className="error-title">That's not a cat!</p>
+              </div>
+
+              <div className="error-content">
+                <p className="error-message">{errorReason}</p>
+              </div>
+
+              <div className="error-actions">
+                <button 
+                  className="error-button"
+                  onClick={handleCloseError}
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
 };
+
 
 export default HomePage;
 
