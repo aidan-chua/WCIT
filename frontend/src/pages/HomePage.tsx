@@ -28,6 +28,9 @@ const navigate = useNavigate();
 const [showError, setShowError] = useState(false);
 const [errorReason, setErrorReason] = useState("");
 
+// Ensure photos are scaled
+const [samplePhotosOpen, setSamplePhotosOpen] = useState(false);
+
 const SAMPLE_PHOTOS = [
   { id: 'sphynx', label: 'Sphynx', src: '/samples/sphynx.jpg', filename: 'sphynx.jpg' },
   { id: 'american-shorthair', label: 'American Shorthair', src: '/samples/american-shorthair.jpg', filename: 'american-shorthair.jpg' },
