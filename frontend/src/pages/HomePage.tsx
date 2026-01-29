@@ -28,6 +28,13 @@ const navigate = useNavigate();
 const [showError, setShowError] = useState(false);
 const [errorReason, setErrorReason] = useState("");
 
+const SAMPLE_PHOTOS = [
+  { id: 'sphynx', label: 'Sphynx', src: '/samples/sphynx.jpg', filename: 'sphynx.jpg' },
+  { id: 'american-shorthair', label: 'American Shorthair', src: '/samples/american-shorthair.jpg', filename: 'american-shorthair.jpg' },
+  { id: 'dog', label: 'Dog', src: '/samples/dog.jpg', filename: 'dog.jpg' },
+  { id: 'lion', label: 'Lion', src: '/samples/lion.jpg', filename: 'lion.jpg' },
+];
+
 useEffect(()=> {
   const getCameras = async () => {
     try {
@@ -250,6 +257,23 @@ const startCamera = async (deviceId?: string) => {
   const handleCloseError = () => {
     setShowError(false);
     setErrorReason("");
+  };
+
+  const handleSamplePhotoClick = async (sample:typeof SAMPLE_PHOTOS[0]) => {
+    try {
+      const res = await fetch(sample.src);
+      if (!res.ok) throw new Error(`Image not foung`);
+      const blob = await.res.blob();
+      const file = new File([blob], sample.filename, {type:blob.type || 'image/jpeg'});
+      setSelectedImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
+      setResult(null);
+      setShowResult(false);
+      setShowError(false);
+    } catch (e) {
+      console.error('Failed to load sample:', e);
+      alert(`Sample image not found. Add ${sample.filename} to public/samples/ `);
+    }
   };
 
   return (

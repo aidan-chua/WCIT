@@ -668,4 +668,73 @@ h1, h2, h3 {
     padding: 12px 16px;
     font-size: 14px;
   }
+
+  .sample-photos-section {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    border: 2px dashed var(--accent, #667eea);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .sample-photos-title {
+    font-family: var(--heading-font);
+    font-size: 1.25rem;
+    margin: 0 0 0.25rem 0;
+    color: #333;
+  }
+  
+  .sample-photos-subtitle {
+    font-family: var(--body-font);
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0 0 1rem 0;
+  }
+  
+  .sample-photos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  
+  .sample-photo-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .sample-photo-card:hover {
+    border-color: var(--accent, #667eea);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+  
+  .sample-photo-img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .sample-photo-label {
+    font-family: var(--body-font);
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 6px;
+    color: #333;
+  }
+  
+  @media (max-width: 500px) {
+    .sample-photos-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
 }
