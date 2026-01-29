@@ -483,16 +483,37 @@ const startCamera = async (deviceId?: string) => {
         </div>
 
         <div className="sample-photos-section">
-          <h3 className="sample-photos-title">Try sample photos</h3>
-          <p className="sample-photos-subtitle">Dont have a cat yourself? Either screenshot a cat online or use one of our sample "cats", DONT CLICK THE DOG</p>
-          <div className = "sample-photos-grid">
-          {SAMPLE_PHOTOS.map((sample) => (
-            <button key = {sample.id} type = "button" className = "sample-photos-card" onClick={()=>handleSamplePhotoClick(sample)}>
-              <img src={sample.src} alt={sample.label} className="sample-photo-image" />
-              <span className="sample-photo-label">{sample.label}</span>
-            </button>
-          ))}
-          </div>
+          <button
+            type="button"
+            className="sample-photos-dropdown-header"
+            onClick={() => setSamplePhotosOpen(!samplePhotosOpen)}
+            aria-expanded={samplePhotosOpen}
+          >
+            <h3 className="sample-photos-title">Try sample photos</h3>
+            <span className={`sample-photos-chevron ${samplePhotosOpen ? 'open' : ''}`}>▼</span>
+          </button>
+          {samplePhotosOpen && (
+            <>
+              <p className="sample-photos-subtitle">
+                Dont have a cat? Use one of our sample photos to test the app, DONT CLICK THE DOG.
+              </p>
+              <div className="sample-photos-grid">
+                {SAMPLE_PHOTOS.map((sample) => (
+                  <button
+                    key={sample.id}
+                    type="button"
+                    className="sample-photo-card"
+                    onClick={() => handleSamplePhotoClick(sample)}
+                  >
+                    <div className="sample-photo-img-wrap">
+                      <img src={sample.src} alt={sample.label} className="sample-photo-img" />
+                    </div>
+                    <span className="sample-photo-label">{sample.label}</span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
           
