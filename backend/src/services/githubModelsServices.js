@@ -16,7 +16,8 @@ export async function identifyCatBreed(imageBuffer, imageMimeType) {
 
         const base64Image = imageBuffer.toString('base64');
         const dataUrl = `data:${imageMimeType};base64,${base64Image}`;
-
+        
+        console.log('Calling Github Models (cat check)')
         // First, check if it's actually a cat
         const catCheckResponse = await client.chat.completions.create({
             model: modelName,
@@ -70,7 +71,7 @@ export async function identifyCatBreed(imageBuffer, imageMimeType) {
             error.reason = catCheck.reason || "The image does not contain a cat";
             throw error;
         }
-
+        console.log('Cat check done')
         // If it is a cat, proceed with full identification
         const response = await client.chat.completions.create({
             model: modelName,
@@ -118,6 +119,8 @@ Important:
             ],
             max_tokens: 500,
         });
+
+        console.log('Calling GitHub Models (full identification)...');
         
         // Parse full identification response
         const content = response.choices[0]?.message?.content;

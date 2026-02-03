@@ -669,6 +669,9 @@ h1, h2, h3 {
     font-size: 14px;
   }
 
+}
+
+
 /* Try sample photos – dropdown + same-size thumbnails */
 .sample-photos-section {
   margin-top: 2rem;
@@ -789,5 +792,4 @@ h1, h2, h3 {
   .sample-photos-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-}
 }
