@@ -525,9 +525,9 @@ const startCamera = async (deviceId?: string) => {
         )}
 
         {showResult && result && (
-          <div className="result-modal-overlay" onClick={handleCloseError}>
+          <div className="result-modal-overlay" onClick={() => setShowResult(false)}>
             <div className="result-modal" onClick={(e) => e.stopPropagation()}>
-              <button className="close-button" onClick={handleCloseError}>×</button>
+              <button className="close-button" onClick={() => setShowResult(false)}>×</button>
               
               <div className="result-header">
                 <h2>Congratulations!</h2>
