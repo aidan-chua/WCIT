@@ -240,7 +240,7 @@ const startCamera = async (deviceId?: string) => {
     try {
       const identification = await apiService.uploadImage(selectedImage);
       setResult(identification);
-      setShowResult(false);
+      setShowResult(true);
     } catch (error:any) {
       console.log(`Error caught in handleUpload:`, error);
       if (error.message === "MEOWRRER404 Thats not a cat" || error.message?.includes("MEOWRRER404")) {
