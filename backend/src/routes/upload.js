@@ -17,7 +17,7 @@ const upload = multer({
 });
 
 router.post('/upload', upload.single('image'), async (req, res) => {
-    consolelog('Upload request received at', new Date().toISOString());
+    console.log('Upload request received at', new Date().toISOString());
     try {
         if (!req.file) {
             return res.status(400).json({error: 'No image file provided'})
